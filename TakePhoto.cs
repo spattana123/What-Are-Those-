@@ -5,7 +5,8 @@ using System.Collections;
 using System.IO;
 using UnityEngine.UI;
 
-public class TakePicture : MonoBehaviour {
+public class TakePhoto : MonoBehaviour
+{
     private const string BASE_URL = "www.<YOUR_SITE>.com/getData.php?url=";
 
     private const string GOOGLE_API_KEY = "***************************";
@@ -28,11 +29,14 @@ public class TakePicture : MonoBehaviour {
 
 
     byte[] imByteArr;
+    private GameObject buttonObject;
     private GameObject scanningObject;
     private GameObject first_line_Object;
     private GameObject second_line_Object;
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
+        buttonObject = GameObject.Find("Button");
         scanningObject = GameObject.Find("Image");
         first_line_Object = GameObject.Find("line1");
         second_line_Object = GameObject.Find("line2");
@@ -45,10 +49,14 @@ public class TakePicture : MonoBehaviour {
 
     }
     public void StartCamera()
-    {   // Osbert Code
+    {
+        first_line_Object.SetActive(false);
+        second_line_Object.SetActive(false);
+        first_line_Object.transform.parent.gameObject.SetActive(false);
+        second_line_Object.transform.parent.gameObject.SetActive(false);
         StartCoroutine("Take_Photo");
     }
-	public IEnumerator Take_Photo()
+    public IEnumerator Take_Photo()
     {
         string filePath;
 
@@ -67,6 +75,7 @@ public class TakePicture : MonoBehaviour {
             imByteArr = File.ReadAllBytes(filePath);
         }
 
+        buttonObject.SetActive(false);
         scanningObject.SetActive(true);
         StartCoroutine("Upload_Image");
 
@@ -120,14 +129,14 @@ public class TakePicture : MonoBehaviour {
 
         print(www.text);
 
-        if(parsedData.Length > 42)
+        if (parsedData.Length > 42)
         {
             string line1 = parsedData[43];
             string line2 = parsedData[42];
 
-            for(int i=0; i<parsedData.Length; i++)
+            for (int i = 0; i < parsedData.Length; i++)
             {
-                if(parsedData[i].Contains("Wikipedia"))
+                if (parsedData[i].Contains("Wikipedia"))
                 {
                     line1 = parsedData[i];
                     line2 = parsedData[i + 4];
@@ -146,17 +155,17 @@ public class TakePicture : MonoBehaviour {
                 line2.Replace("\n", " ");
             }
 
-            CreateVisibleText (wordsToSearch, line1, line2);
+            CreateVisibleText(wordsToSearch, line1, line2);
         }
         else
-       /** {
-            string line1 = "ERROR";
-            string line2 = "ERROR";
+            /** {
+                 string line1 = "ERROR";
+                 string line2 = "ERROR";
 
-            CreateVisibleText(wordsToSearch, line1, line2);
-        } **/
-        scanningObject.SetActive(false);
-        //buttonObject.SetActive(true);
+                 CreateVisibleText(wordsToSearch, line1, line2);
+             } **/
+            scanningObject.SetActive(false);
+            buttonObject.SetActive(true);
     }
 
     public void CreateVisibleText(string text1, string text2, string text3)
@@ -166,7 +175,7 @@ public class TakePicture : MonoBehaviour {
         first_line_Object.transform.parent.gameObject.SetActive(true);
         second_line_Object.transform.parent.gameObject.SetActive(true);
 
-        if(text1.Contains(" "))
+        if (text1.Contains(" "))
         {
             text1 = text1.Replace(" ", "\n");
         }
@@ -177,12 +186,12 @@ public class TakePicture : MonoBehaviour {
             text3 = text3.Replace(@"\n", " ");
         }
         int spaceCounter = 0;
-        for(int i=0; i< text2.Length; i++)
+        for (int i = 0; i < text2.Length; i++)
         {
-            if(text2[i]==' ')
+            if (text2[i] == ' ')
             {
                 spaceCounter++;
-                if(spaceCounter % 3 == 0)
+                if (spaceCounter % 3 == 0)
                 {
                     text2 = text2.Insert(i, "\n");
                 }
@@ -191,12 +200,12 @@ public class TakePicture : MonoBehaviour {
 
         spaceCounter = 0;
 
-        for(int i=0; i < text3.Length; i++)
+        for (int i = 0; i < text3.Length; i++)
         {
             if (text3[i] == ' ')
             {
                 spaceCounter++;
-                if(spaceCounter % 4 == 0)
+                if (spaceCounter % 4 == 0)
                 {
                     text3 = text3.Insert(i, "/n");
                 }
@@ -207,8 +216,11 @@ public class TakePicture : MonoBehaviour {
     }
 
 
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 }
+
+
