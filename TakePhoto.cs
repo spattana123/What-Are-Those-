@@ -30,18 +30,18 @@ public class TakePhoto : MonoBehaviour
 
     byte[] imByteArr;
     private GameObject buttonObject;
-    private GameObject scanningObject;
+    //private GameObject scanningObject;
     private GameObject first_line_Object;
     private GameObject second_line_Object;
     // Use this for initialization
     void Start()
     {
         buttonObject = GameObject.Find("Button");
-        scanningObject = GameObject.Find("Image");
+        //scanningObject = GameObject.Find("Image");
         first_line_Object = GameObject.Find("line1");
         second_line_Object = GameObject.Find("line2");
 
-        scanningObject.SetActive(false);
+        //scanningObject.SetActive(false);
         first_line_Object.SetActive(false);
         first_line_Object.transform.parent.gameObject.SetActive(false);
         second_line_Object.SetActive(false);
@@ -76,7 +76,7 @@ public class TakePhoto : MonoBehaviour
         }
 
         buttonObject.SetActive(false);
-        scanningObject.SetActive(true);
+        //scanningObject.SetActive(true);
         StartCoroutine("Upload_Image");
 
 
@@ -164,7 +164,7 @@ public class TakePhoto : MonoBehaviour
 
                  CreateVisibleText(wordsToSearch, line1, line2);
              } **/
-            scanningObject.SetActive(false);
+            //scanningObject.SetActive(false);
             buttonObject.SetActive(true);
     }
 
