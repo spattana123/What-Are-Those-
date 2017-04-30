@@ -21,10 +21,10 @@ app.post('/',function(res,req){
 	var string = content.substring(pos+1,content.length);
 	console.log(string);
 });
-app.listen(3000,function(){
+app.listen(process.env.PORT,function(){
 	console.log("Server is working!");
 });
 
-client.connect(3000,'127.0.0.1',function(){
+client.connect(process.env.PORT,'127.0.0.1',function(){
 	console.log("client has connected");
 });
