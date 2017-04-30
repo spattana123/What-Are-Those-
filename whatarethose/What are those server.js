@@ -1,3 +1,8 @@
+/*
+this is our web server. It uses express.js to handle the get and 
+post request. The client will send a json object of an image and I will 
+take that image and send it to the cloudinary api.
+*/
 var http = require('http');
 var express = require('express');
 var net = require('net');
@@ -9,8 +14,12 @@ app.get('/',function(res,req){
 });
 
 app.post('/',function(res,req){
-	console.log("json sent");
-	req.send("json sent");
+	console.log(req.body);
+	var content = JSON.stringify(req);
+	//loops through the json string
+	var pos = content.search(":");
+	var string = content.substring(pos+1,content.length);
+	console.log(string);
 });
 app.listen(3000,function(){
 	console.log("Server is working!");
