@@ -7,8 +7,11 @@ var http = require('http');
 var express = require('express');
 var net = require('net');
 var app = express();
+var bodyParser = require('body-parser');
 
-app.use(express.bodyParser());
+//Body Parser is no longer apart of express. I need to add
+//it another way.
+app.use(express.bodyParser()); 
 
 var client = new net.Socket();
 app.get('/',function(res,req){
