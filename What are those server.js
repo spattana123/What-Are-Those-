@@ -8,6 +8,8 @@ var express = require('express');
 var net = require('net');
 var app = express();
 
+app.use(express.bodyParser());
+
 var client = new net.Socket();
 app.get('/',function(res,req){
 	req.send("<h1>Hello World!</h1>");
@@ -15,7 +17,7 @@ app.get('/',function(res,req){
 
 app.post('/',function(res,req){
 	console.log(req.body);
-	var content = JSON.stringify(req);
+	var content = JSON.stringify(req.body);
 	//loops through the json string
 	var pos = content.search(":");
 	var string = content.substring(pos+1,content.length);
@@ -25,6 +27,6 @@ app.listen(process.env.PORT,function(){
 	console.log("Server is working!");
 });
 
-client.connect(process.env.PORT,'127.0.0.1',function(){
+client.connect(process.env.PORT,'10.105.42.230',function(){
 	console.log("client has connected");
 });
