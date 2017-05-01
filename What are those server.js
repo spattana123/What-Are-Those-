@@ -10,6 +10,13 @@ var app = express();
 var bodyParser = require('body-parser');
 var cloud = require('cloudinary');
 
+//cloudinary acournt 
+cloud.config({
+	cloud_name:'dtludbb6q',
+	api_key:'148366515357314',
+	api_secret: '_XoXFClQ8v6nRIDekP85spE3U-A'
+
+});
 //Body Parser is no longer apart of express. I need to add
 //it another way.
 app.use(bodyParser.urlencoded());
@@ -21,14 +28,10 @@ app.get('/',function(res,req){
 });
 
 app.post('/',function(res,req){
-	console.log(req);
-	console.log(req.body);
-	res.send(req.body);
-	// var content = JSON.stringify(req.body);
-	// //loops through the json string
-	// var pos = content.search(":");
-	// var string = content.substring(pos+1,content.length);
-	// console.log(string);
+
+	clound.uploader.upload(req.body,function(result){
+		console.log(result);
+	});
 });
 app.listen(process.env.PORT,function(){
 	console.log("Server is working!");
