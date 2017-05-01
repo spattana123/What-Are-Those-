@@ -8,6 +8,7 @@ var express = require('express');
 var net = require('net');
 var app = express();
 var bodyParser = require('body-parser');
+var cloud = require('cloudinary');
 
 //Body Parser is no longer apart of express. I need to add
 //it another way.
