@@ -11,20 +11,23 @@ var bodyParser = require('body-parser');
 
 //Body Parser is no longer apart of express. I need to add
 //it another way.
-app.use(express.bodyParser()); 
-
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
+//app.use(bodyParser({limit: '50mb'}));
 var client = new net.Socket();
 app.get('/',function(res,req){
 	req.send("<h1>Hello World!</h1>");
 });
 
 app.post('/',function(res,req){
+	console.log(req);
 	console.log(req.body);
-	var content = JSON.stringify(req.body);
-	//loops through the json string
-	var pos = content.search(":");
-	var string = content.substring(pos+1,content.length);
-	console.log(string);
+	res.send(req.body);
+	// var content = JSON.stringify(req.body);
+	// //loops through the json string
+	// var pos = content.search(":");
+	// var string = content.substring(pos+1,content.length);
+	// console.log(string);
 });
 app.listen(process.env.PORT,function(){
 	console.log("Server is working!");
