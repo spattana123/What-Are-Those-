@@ -10,6 +10,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var cloud = require('cloudinary');
 var fs = require('fs');
+var busboy = require('connect-busboy');
 //cloudinary acournt 
 cloud.config({
 	cloud_name:'dtludbb6q',
@@ -17,11 +18,9 @@ cloud.config({
 	api_secret: '_XoXFClQ8v6nRIDekP85spE3U-A'
 
 });
-//Body Parser is no longer apart of express. I need to add
-//it another way.
-app.use(bodyParser.urlencoded());
-app.use(bodyParser.json());
-//app.use(bodyParser({limit: '50mb'}));
+
+app.use(busboy);
+
 var client = new net.Socket();
 app.get('/',function(res,req){
 	req.send("<h1>Hello World!</h1>");
@@ -29,20 +28,9 @@ app.get('/',function(res,req){
 
 app.post('/',function(res,req){
 //	console.log(req);
-	cloud.uploader.upload(req,function(result){
-		console.log(result);
-	}, {
-    public_id: 'sample_id', 
-    crop: 'limit',
-    width: 2000,
-    height: 2000,
-    eager: [
-      { width: 200, height: 200, crop: 'thumb', gravity: 'face',
-        radius: 20, effect: 'sepia' },
-      { width: 100, height: 150, crop: 'fit', format: 'png' }
-    ],                                     
-    tags: ['special', 'for_homepage']
-  });
+  var stream = cloud.uploader.upload_stream(function(result) { console.log(result) });
+var file_reader = fs.createReadStream(req.body).pipe(stream)
+
 });
 app.listen(process.env.PORT,function(){
 	console.log("Server is working!");
