@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Text;
 
 public class TakePhoto : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class TakePhoto : MonoBehaviour
 
 
     byte[] imByteArr;
+    byte[] imByteArr_resize;
     public GameObject buttonObject;
     //private GameObject scanningObject;
     private GameObject first_line_Object;
@@ -64,21 +66,36 @@ public class TakePhoto : MonoBehaviour
             filePath = Application.persistentDataPath + "/image.png";
             Application.CaptureScreenshot("/image.png");
             yield return new WaitForSeconds(1.25f);
+            imByteArr_resize = new byte[16384];
             imByteArr = File.ReadAllBytes(filePath);
+            for (int i = 161519; i < 177903; i++)
+            {
+                imByteArr_resize[i - 161519] = imByteArr[i];
+            }
+            Texture2D tex = new Texture2D(2, 2);
+            tex.LoadImage(imByteArr_resize);
+            print(imByteArr.Length);
             print("Here Application.isMobilePlatform");
         }
         else
         {
             //print("Here pre-Application.isMobilePlatform2");
-            filePath = Application.dataPath + "image.png";
+            filePath = Application.dataPath + "/image.png";
+            print(filePath);
             //print("stop?");
             Application.CaptureScreenshot(filePath);
             //print("stop??");
             yield return new WaitForSeconds(1.25f);
             print("stop??");
+            imByteArr_resize = new byte[16384];
             imByteArr = File.ReadAllBytes(filePath);
+            for(int i=161519; i <177903; i++)
+            {
+                imByteArr_resize[i - 161519] = imByteArr[i];
+            }
             Texture2D tex = new Texture2D(2, 2);
-            tex.LoadImage(imByteArr);
+            tex.LoadImage(imByteArr_resize);
+            print(imByteArr.Length);
             print("stop????");
             print("Here Application.isMobilePlatform2");
         }
@@ -92,8 +109,24 @@ public class TakePhoto : MonoBehaviour
     public IEnumerator Upload_To_Server()
     {
         Dictionary<string, string> headers = new Dictionary<string, string>();
-        headers.Add("Content-Type","application/json");
-        WWW request = new WWW("ip-address", imByteArr, headers);
+        //string json = JsonUtility.ToJson(imByteArr);
+       // byte[] postThisz = Encoding.UTF8.GetBytes(json);
+        /*for(int i=0; i < postThisz.Length; i++)
+        {
+            print(postThisz[i]);
+        } */
+        //byte[] response = wc.UploadData(siteUrl, postThisz);
+        headers.Add("Content-Type","application/json; charset=utf8");
+        foreach (KeyValuePair<string, string> entry in headers)
+        {
+            print(entry);
+            // do something with entry.Value or entry.Key
+        } 
+       // string json_string = JsonUtility.ToJson(headers);
+      /*  for (int i=0; i < imByteArr_resize.Length; i++){
+            print(imByteArr_resize[i]);
+        } */
+        WWW request = new WWW("https://what-are-those-seanbrhn3.c9users.io/", imByteArr_resize);
         yield return request;
         string txt = "";
         if (string.IsNullOrEmpty(request.error)) { txt = request.text; }  //text of success
@@ -108,7 +141,7 @@ public class TakePhoto : MonoBehaviour
         string url = "https://api.cloudinary.com/v1_1/" + CLOUD_NAME + "/auto/upload/";
 
         WWWForm myForm = new WWWForm();
-        myForm.AddBinaryData("file", imByteArr);
+        myForm.AddBinaryData("file", imByteArr_resize);
         myForm.AddField("uploadPreset", UPLOAD_PRESET_NAME);
 
         WWW www = new WWW(url, myForm);
