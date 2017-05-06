@@ -7,7 +7,7 @@ using System.Text;
 
 public class TakePhoto : MonoBehaviour
 {
-    private const string BASE_URL = "www.google.com/getData.php?url=";
+    private const string BASE_URL = "https://whatarethose-seanbrhn3.c9users.io/getData.php?url=";
 
     private const string GOOGLE_API_KEY = "AIzaSyBSC2CjRcfgvo0dStXeOqsYAa1lsuPkjY8";
 
@@ -139,25 +139,26 @@ public class TakePhoto : MonoBehaviour
     {
         print("Here Upload_Image");
         string url = "https://api.cloudinary.com/v1_1/" + CLOUD_NAME + "/auto/upload/";
+        //string url = "cloudinary://148366515357314:_XoXFClQ8v6nRIDekP85spE3U-A@dtludbb6q";
 
         WWWForm myForm = new WWWForm();
-        myForm.AddBinaryData("file", imByteArr_resize);
-        myForm.AddField("uploadPreset", UPLOAD_PRESET_NAME);
-
+        myForm.AddBinaryData("file", imByteArr);
+        myForm.AddField("upload_preset", UPLOAD_PRESET_NAME);
+        
         WWW www = new WWW(url, myForm);
         yield return www;
         print(www.text);
 
-        imageURl = www.text.Split('"', '"')[0];
-        /*
+        //imageURl = www.text.Split('"', '"')[41];
+        
         string[] urlarr = www.text.Split('"', '"');
         for(int i=0; i < urlarr.Length; i++)
         {
-            print(urlarr[i]);
+            print(i + " "+ urlarr[i]);
         }
 
-        imageURl = urlarr[0];
-        */
+        imageURl = urlarr[41];
+        
 
         print(imageURl);
 
@@ -178,6 +179,7 @@ public class TakePhoto : MonoBehaviour
         WWW www = new WWW(fullSearchURL);
         yield return www;
 
+        print(www.text);
         wordsToSearch = www.text.Substring(www.text.IndexOf(">") + 1);
 
         print(wordsToSearch);
@@ -189,14 +191,21 @@ public class TakePhoto : MonoBehaviour
     {
         print("Here Google_Search_API");
         string searchURL = GOOGLE_SEARCH_URL + WWW.EscapeURL(wordsToSearch);
+        ArrayList myList = new ArrayList();
 
         WWW www = new WWW(searchURL);
         yield return www;
+
+        WWWForm footurls = new WWWForm();
 
 
         var parsedData = www.text.Split('\n');
 
         print(www.text);
+        for(int i=0; i < parsedData.Length; i++)
+        {
+            print(i + " "+parsedData[i]);
+        }
 
         if (parsedData.Length > 42)
         {
@@ -212,7 +221,19 @@ public class TakePhoto : MonoBehaviour
                     line2 = parsedData[i + 4];
                     break;
                 }
+                if (parsedData[i].Contains("footwear") && parsedData[i].Contains("link"))
+                {
+                    myList.Add(parsedData[i]);
+                    footurls.AddField(parsedData[i], "urls");
+                }
+
+            } 
+            for(int i=0; i < myList.Count; i++)
+            {
+                print(myList[i]);
             }
+            WWW post = new WWW("https://whatarethose-seanbrhn3.c9users.io/", footurls);
+            yield return post;
 
             line1 = line1.Remove(0, 13);
             line2 = line2.Remove(0, 15);
@@ -253,6 +274,7 @@ public class TakePhoto : MonoBehaviour
         {
             text1 = text1.Replace(" ", "\n");
         }
+        print(text1);
         first_line_Object.GetComponent<Text>().text = text1;
 
         if (text3.Contains("\\n"))
@@ -309,7 +331,7 @@ public class TakePhoto : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+      
     }
 }
 
