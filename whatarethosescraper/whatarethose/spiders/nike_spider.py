@@ -12,6 +12,6 @@ class NikeSpider(scrapy.Spider):
 		c = conn.cursor()
 		for images in response.css(".grid-item-image"):
 			yield{
-				'images': response.css('img').xpath('@src').extract(),
-				'links': response.css('a').xpath('@href').extract()
+				'images': response.css('img').xpath('@src').extract()
+				#'links': response.css('a').xpath('@href').extract()
 			}
