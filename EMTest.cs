@@ -194,6 +194,7 @@ public class EMTest : MonoBehaviour {
         // To resize the image 
         //Image<Bgr, byte> resizedImage = picture19.Resize(picture8.Width, picture8.Height, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
         Boolean recfound = false;
+        int mindiffarea = 36000;
         if (red < 246 && green < 246 && blue < 246) picture20 = ObjectDetector(picture19, filepath2); else picture20 = picture19;
         //Image<Gray, Byte> picture21 = new Image<Gray, byte>(picture20.Bitmap);
         for (int n=1; n < 120 && !recfound; n++)
@@ -224,8 +225,16 @@ public class EMTest : MonoBehaviour {
                             //try { picture5 = Drawtwo(picture3, picture6); } catch(NullReferenceException e){ }
                             //print("nzc is now " + nonZeroCount + " picture name is " + s);
 
-                            picture5.Save(filepath_res);
+                            //picture5.Save(filepath_res);
                             print("nzc is now " + r + " "+area);
+                            int diffarea = Math.Abs(picturearea - area);
+                            if(diffarea < mindiffarea)
+                            {
+                                print("diff area is " + diffarea);
+                                mindiffarea = diffarea;
+                                maxint = n - 1;
+                            }
+/*
                             if (area > max)
                             {
                                 max = area;
@@ -238,8 +247,14 @@ public class EMTest : MonoBehaviour {
                                 //picture5.Save(filepath3);
                                 picture6.Save("C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture635.jpg");
                             }
-                            if (Math.Abs(picturearea - area) <= 27120) recfound = true;
-
+                            if (Math.Abs(picturearea - area) <= 7000 && area != 0)
+                            {
+                                print("diff area is " + (picturearea - area));
+                                max = area;
+                                maxint = n - 1;
+                                recfound = true;
+                            } 
+                            */
                         }
                         catch (FileNotFoundException e)
                         {
@@ -698,6 +713,7 @@ public class EMTest : MonoBehaviour {
             modelImage.Data = data_model;
         }
 
+  
         for (int run = 19; run >= 0; run--)
         {
             for (int i = result.Rows - 1; i >= max.Value; i--)
@@ -710,9 +726,9 @@ public class EMTest : MonoBehaviour {
                 }
             }
             modelImage.Data = data_model;
-        }
+        } 
 
-  /*     for (int run = 19; run >= 0; run--)
+       for (int run = 19; run >= 0; run--)
         {
             for (int i = result.Cols - 1; i >= hmax.Value; i--)
             {
@@ -724,7 +740,7 @@ public class EMTest : MonoBehaviour {
                 }
             }
             modelImage.Data = data_model;
-        } */
+        } 
 
 
 
@@ -894,9 +910,16 @@ public class EMTest : MonoBehaviour {
                new PointF(rect.Left, rect.Top)};
             homography.ProjectPoints(pts);
              for (int i = 0; i < pts.Length; i++) print("points are " + pts[i]);
-            int a = (int)(pts[0].X * pts[1].Y + pts[1].X * pts[2].Y + pts[2].X * pts[3].Y + pts[3].X * pts[0].Y);
-            int b = (int)(pts[1].X * pts[0].Y + pts[2].X * pts[1].Y + pts[3].X * pts[2].Y + pts[0].X * pts[3].Y);
-            area = Math.Abs(a-b);
+            if (pts.Length > 0)
+            {
+                int a = (int)(pts[0].X * pts[1].Y + pts[1].X * pts[2].Y + pts[2].X * pts[3].Y + pts[3].X * pts[0].Y);
+                int b = (int)(pts[1].X * pts[0].Y + pts[2].X * pts[1].Y + pts[3].X * pts[2].Y + pts[0].X * pts[3].Y);
+                area = Math.Abs(a - b);
+            }
+            else
+            {
+                area = 0;
+            }
 
         /**     int width = rect.Right - rect.Left;
              print("right is "+rect.Right +" left is "+rect.Left+" width is " + width);
@@ -911,6 +934,10 @@ public class EMTest : MonoBehaviour {
             {
 
             }
+        }
+        else
+        {
+            area = 0;
         }
         #endregion
         
