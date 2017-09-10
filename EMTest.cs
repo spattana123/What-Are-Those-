@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 using Emgu.CV;
 using Emgu.CV.Util;
@@ -54,6 +55,7 @@ public class EMTest : MonoBehaviour {
         ArrayList imglinks = new ArrayList();
         string filepath = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture635.jpg";
         string filepath2 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture636.jpg";
+        //string filepath2 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\testpicture3.jpg";
         string filepath3 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture637.jpg";
         string filepath4;
         string filepath5 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture97.jpg";
@@ -217,20 +219,20 @@ public class EMTest : MonoBehaviour {
                             Image<Gray, byte> picture6 = new Image<Gray, byte>(filepath);
                             Image<Bgr, byte> resizedImage = picture20.Resize(picture6.Width, picture6.Height, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
                             Image<Gray, Byte> picture21 = new Image<Gray, byte>(resizedImage.Bitmap);
-                            print("width is " + picture6.Width + " height is " + picture6.Height);
+                            //print("width is " + picture6.Width + " height is " + picture6.Height);
                             int picturearea = picture6.Width * picture6.Height * 2;
                             long matchTime;
                             //Image<Bgr, byte> picture5 = null;
-                            Image<Bgr, Byte> picture5 = Draw(picture6, picture21, out matchTime);
+                            /*Image<Bgr, Byte> picture5 = */ Draw(picture6, picture21, out matchTime);
                             //try { picture5 = Drawtwo(picture3, picture6); } catch(NullReferenceException e){ }
                             //print("nzc is now " + nonZeroCount + " picture name is " + s);
 
                             //picture5.Save(filepath_res);
-                            print("nzc is now " + r + " "+area);
+                            //print("nzc is now " + r + " "+area);
                             int diffarea = Math.Abs(picturearea - area);
                             if(diffarea < mindiffarea)
                             {
-                                print("diff area is " + diffarea);
+                                //print("diff area is " + diffarea);
                                 mindiffarea = diffarea;
                                 maxint = n - 1;
                             }
@@ -267,22 +269,22 @@ public class EMTest : MonoBehaviour {
             }
         }
         Image<Bgr, Byte> picture12 = new Image<Bgr, byte>(filepath2);
-        Image<Bgr, Byte> picture7 = ObjectDetector(picture12,filepath2);
+        //Image<Bgr, Byte> picture7 = ObjectDetector(picture12,filepath2);
         //Image<Bgr, Byte> picture7 = Whiteout(picture2);
         long matchTime2;
         long matchTime3;
         long matchTime4;
-        Image<Gray, Byte> picture14 = new Image<Gray, byte>(picture7.Bitmap);
+        //Image<Gray, Byte> picture14 = new Image<Gray, byte>(picture7.Bitmap);
         //Image<Gray, Byte> picture14 = new Image<Gray, byte>("C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture636.jpg");
-        Image<Bgr, Byte> picture9 = Draw(picture8, picture14, out matchTime2);
+        //Image<Bgr, Byte> picture9 = Draw(picture8, picture14, out matchTime2);
         print("nzc2 of image1 is now " + nonZeroCount);
         print("area is " + area);
-        Image<Bgr, Byte> picture10 = Draw(picture11, picture14, out matchTime3);
+        //Image<Bgr, Byte> picture10 = Draw(picture11, picture14, out matchTime3);
         print("nzc2 of image2 is now " + nonZeroCount);
         print("area is " + area);
-        picture7.Save("C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture639.jpg");
-        picture9.Save("C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture641.jpg");
-        picture10.Save("C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture643.jpg");
+       // picture7.Save("C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture639.jpg");
+        //picture9.Save("C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture641.jpg");
+        //picture10.Save("C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture643.jpg");
      //   Image<Gray, Byte> gray7 = new Image<Gray, byte>(picture7.Bitmap); Image<Bgr, Byte> picture12 = Draw(gray7, picture8, out matchTime4); picture12.Save("C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture641.jpg");
         dbcmd.CommandText = sqlQuery2;
         IDataReader reader2 = dbcmd.ExecuteReader();
@@ -300,7 +302,7 @@ public class EMTest : MonoBehaviour {
 
                     if (pgid != pgidprev)
                     {
-                        imglinks.Add(name); print(name + " is added to the list " + imglink + " " + count);
+                        imglinks.Add(name); //print(name + " is added to the list " + imglink + " " + count);
                         pgidprev = pgid;
                         //print(imglink);
                         count++;
@@ -314,7 +316,7 @@ public class EMTest : MonoBehaviour {
 
                     if (name != nameprev)
                     {
-                        imglinks.Add(name); print(name + " is added to the list " + imglink + " " + count);
+                        imglinks.Add(name); //print(name + " is added to the list " + imglink + " " + count);
                         nameprev = name;
                         //print(imglink);
                         count++;
@@ -793,7 +795,7 @@ public class EMTest : MonoBehaviour {
         return result;
 
     }
-    public Image<Bgr, Byte> Draw(Image<Gray, Byte> modelImage, Image<Gray, byte> observedImage, out long matchTime)
+    public /*Image<Bgr, Byte>*/ void Draw(Image<Gray, Byte> modelImage, Image<Gray, byte> observedImage, out long matchTime)
     {
         Stopwatch watch;
         HomographyMatrix homography = null;
@@ -896,8 +898,7 @@ public class EMTest : MonoBehaviour {
         }
 
         //Draw the matched keypoints
-        Image<Bgr, Byte> result = Features2DToolbox.DrawMatches(modelImage, modelKeyPoints, observedImage, observedKeyPoints,
-           indices, new Bgr(255, 255, 255), new Bgr(255, 255, 255), mask, Features2DToolbox.KeypointDrawType.DEFAULT);
+        //Image<Bgr, Byte> result = Features2DToolbox.DrawMatches(modelImage, modelKeyPoints, observedImage, observedKeyPoints, indices, new Bgr(255, 255, 255), new Bgr(255, 255, 255), mask, Features2DToolbox.KeypointDrawType.DEFAULT);
 
         #region draw the projected region on the image
         if (homography != null)
@@ -909,7 +910,7 @@ public class EMTest : MonoBehaviour {
                new PointF(rect.Right, rect.Top),
                new PointF(rect.Left, rect.Top)};
             homography.ProjectPoints(pts);
-             for (int i = 0; i < pts.Length; i++) print("points are " + pts[i]);
+             //for (int i = 0; i < pts.Length; i++) print("points are " + pts[i]);
             if (pts.Length > 0)
             {
                 int a = (int)(pts[0].X * pts[1].Y + pts[1].X * pts[2].Y + pts[2].X * pts[3].Y + pts[3].X * pts[0].Y);
@@ -929,7 +930,7 @@ public class EMTest : MonoBehaviour {
 
             try
             {
-              result.DrawPolyline(Array.ConvertAll<PointF, Point>(pts, Point.Round), true, new Bgr(System.Drawing.Color.Red), 5);
+              //result.DrawPolyline(Array.ConvertAll<PointF, Point>(pts, Point.Round), true, new Bgr(System.Drawing.Color.Red), 5);
             }catch(OverflowException e)
             {
 
@@ -943,7 +944,7 @@ public class EMTest : MonoBehaviour {
         
         matchTime = watch.ElapsedMilliseconds;
 
-        return result;
+       // return result;
     }
 
     public Image<Bgr, Byte> Drawtwo(Image<Gray, Byte> modelImage, Image<Gray, byte> observedImage)
@@ -1043,6 +1044,63 @@ public class EMTest : MonoBehaviour {
         }
         return isOk;
     }
+
+  /*  void MatchingMethod()
+    {
+        //! [copy_source]
+        /// Source image to display
+        Mat img_display;
+        img.copyTo(img_display);
+        //! [copy_source]
+
+        //! [create_result_matrix]
+        /// Create the result matrix
+        int result_cols = img.cols - templ.cols + 1;
+        int result_rows = img.rows - templ.rows + 1;
+
+        result.create(result_rows, result_cols, CV_32FC1);
+        //! [create_result_matrix]
+
+        //! [match_template]
+        /// Do the Matching and Normalize
+        bool method_accepts_mask = (CV_TM_SQDIFF == match_method || match_method == CV_TM_CCORR_NORMED);
+        if (use_mask && method_accepts_mask)
+        { matchTemplate(img, templ, result, match_method, mask); }
+        else
+        { matchTemplate(img, templ, result, match_method); }
+        //! [match_template]
+
+        //! [normalize]
+        normalize(result, result, 0, 1, NORM_MINMAX, -1, Mat());
+        //! [normalize]
+
+        //! [best_match]
+        /// Localizing the best match with minMaxLoc
+        double minVal; double maxVal; Point minLoc; Point maxLoc;
+        Point matchLoc;
+
+        minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
+        //! [best_match]
+
+        //! [match_loc]
+        /// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
+        if (match_method == TM_SQDIFF || match_method == TM_SQDIFF_NORMED)
+        { matchLoc = minLoc; }
+        else
+        { matchLoc = maxLoc; }
+        //! [match_loc]
+
+        //! [imshow]
+        /// Show me what you got
+        rectangle(img_display, matchLoc, Point(matchLoc.x + templ.cols, matchLoc.y + templ.rows), Scalar::all(0), 2, 8, 0);
+        rectangle(result, matchLoc, Point(matchLoc.x + templ.cols, matchLoc.y + templ.rows), Scalar::all(0), 2, 8, 0);
+
+        imshow(image_window, img_display);
+        imshow(result_window, result);
+        //! [imshow]
+
+        return;
+    } */
 
     // Update is called once per frame
     void Update () {
