@@ -55,13 +55,14 @@ public class EMTest : MonoBehaviour {
         ArrayList imglinks = new ArrayList();
         string filepath = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture635.jpg";
         string filepath2 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture636.jpg";
-        //string filepath2 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\testpicture3.jpg";
+        //string filepath2 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\testpicture8.jpg";
         string filepath3 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture637.jpg";
         string filepath4;
         string filepath5 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture97.jpg";
         string filepath6 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture2032.jpg";
         string filepath7 = "C:\\Users\\Sandeep\\Documents\\What_Are_Those\\Assets\\picture3431.jpg";
         string filepath_res = "";
+        float min = float.MaxValue;
         int size = 0;
         int times = 1;
         int i = 0;
@@ -197,7 +198,8 @@ public class EMTest : MonoBehaviour {
         //Image<Bgr, byte> resizedImage = picture19.Resize(picture8.Width, picture8.Height, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
         Boolean recfound = false;
         int mindiffarea = 36000;
-        if (red < 246 && green < 246 && blue < 246) picture20 = ObjectDetector(picture19, filepath2); else picture20 = picture19;
+        //if (red < 246 && green < 246 && blue < 246) picture20 = ObjectDetector(picture19, filepath2); else picture20 = picture19;
+
         //Image<Gray, Byte> picture21 = new Image<Gray, byte>(picture20.Bitmap);
         for (int n=1; n < 120 && !recfound; n++)
         {
@@ -205,6 +207,7 @@ public class EMTest : MonoBehaviour {
             {
                 for(int p=1; p<=m && !recfound; p++)
                 {
+                    if (n == 45 || n == 46|| n == 63 || n== 82 || n == 83 || n == 112 || n == 114 || n  == 117 || n == 118 || n == 120) continue;
                     int number = 100 * n + m * 10 + p;
                     int resnumber = number * 10;
                     //print("number is " + number);
@@ -217,25 +220,39 @@ public class EMTest : MonoBehaviour {
                         try
                         {
                             Image<Gray, byte> picture6 = new Image<Gray, byte>(filepath);
-                            Image<Bgr, byte> resizedImage = picture20.Resize(picture6.Width, picture6.Height, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
+                            Image<Bgr, Byte> colorImage = new Image<Bgr, Byte>(filepath);
+                            Image<Bgr, byte> resizedImage = picture19.Resize(picture6.Width, picture6.Height, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
                             Image<Gray, Byte> picture21 = new Image<Gray, byte>(resizedImage.Bitmap);
                             //print("width is " + picture6.Width + " height is " + picture6.Height);
                             int picturearea = picture6.Width * picture6.Height * 2;
                             long matchTime;
                             //Image<Bgr, byte> picture5 = null;
-                            /*Image<Bgr, Byte> picture5 = */ Draw(picture6, picture21, out matchTime);
+                            //Image<Bgr, Byte> picture5 =  Draw(picture6, picture21, out matchTime);
+                            float[] a = GetVector(colorImage);
+                            float[] b = GetVector(resizedImage);
+                            float dst = distance(a, b);
+                            print(dst);
+                            if (dst < min)
+                            {
+                                min = dst;
+                                maxint = n - 1;
+                                print("min is "+min +"max int is "+maxint);
+                            }
+
+
                             //try { picture5 = Drawtwo(picture3, picture6); } catch(NullReferenceException e){ }
                             //print("nzc is now " + nonZeroCount + " picture name is " + s);
 
                             //picture5.Save(filepath_res);
                             //print("nzc is now " + r + " "+area);
+                            /*
                             int diffarea = Math.Abs(picturearea - area);
                             if(diffarea < mindiffarea)
                             {
-                                //print("diff area is " + diffarea);
+                                print(filepath_res+" diff area is " + diffarea);
                                 mindiffarea = diffarea;
                                 maxint = n - 1;
-                            }
+                            } */
 /*
                             if (area > max)
                             {
@@ -354,6 +371,34 @@ public class EMTest : MonoBehaviour {
         Image<Bgr, byte> picture5 = Drawtwo(picture3, picture6);
         picture5.Save(filepath3);
         **/
+    }
+    public float distance(float[] a, float[] b)
+    {
+        double sum = 0;
+        for(int i =0; i < a.Length; i++)
+        {
+            double diff = (a[i] - b[i]);
+            sum += Math.Pow(diff, 2.0);
+        }
+        float distance = (float) Math.Sqrt(sum);
+        return distance;
+    }
+    public float[] GetVector(Image<Bgr, Byte> im)
+    {
+        HOGDescriptor hog = new HOGDescriptor();    // with defaults values
+        Image<Bgr, Byte> imageOfInterest = im.Resize(64, 128, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
+        Point[] p = new Point[imageOfInterest.Width * imageOfInterest.Height];
+        int k = 0;
+        for (int i = 0; i < imageOfInterest.Width; i++)
+        {
+            for (int j = 0; j < imageOfInterest.Height; j++)
+            {
+                Point p1 = new Point(i, j);
+                p[k++] = p1;
+            }
+        }
+
+        return hog.Compute(imageOfInterest, new Size(8, 8), new Size(0, 0), p);
     }
     public string parsepbidname(string link)
     {
@@ -736,9 +781,9 @@ public class EMTest : MonoBehaviour {
             {
                 for (int j = 0; j <= result.Rows - 1; j++)
                 {
-                    data_model[j, i, 0] = 255;
-                    data_model[j, i, 1] = 255;
-                    data_model[j, i, 2] = 255;
+                    data_model[j, i, 0] = 246;
+                    data_model[j, i, 1] = 246;
+                    data_model[j, i, 2] = 246;
                 }
             }
             modelImage.Data = data_model;
@@ -795,7 +840,7 @@ public class EMTest : MonoBehaviour {
         return result;
 
     }
-    public /*Image<Bgr, Byte>*/ void Draw(Image<Gray, Byte> modelImage, Image<Gray, byte> observedImage, out long matchTime)
+    public Image<Bgr, Byte> /*void*/ Draw(Image<Gray, Byte> modelImage, Image<Gray, byte> observedImage, out long matchTime)
     {
         Stopwatch watch;
         HomographyMatrix homography = null;
@@ -898,7 +943,7 @@ public class EMTest : MonoBehaviour {
         }
 
         //Draw the matched keypoints
-        //Image<Bgr, Byte> result = Features2DToolbox.DrawMatches(modelImage, modelKeyPoints, observedImage, observedKeyPoints, indices, new Bgr(255, 255, 255), new Bgr(255, 255, 255), mask, Features2DToolbox.KeypointDrawType.DEFAULT);
+        Image<Bgr, Byte> result = Features2DToolbox.DrawMatches(modelImage, modelKeyPoints, observedImage, observedKeyPoints, indices, new Bgr(255, 255, 255), new Bgr(255, 255, 255), mask, Features2DToolbox.KeypointDrawType.DEFAULT);
 
         #region draw the projected region on the image
         if (homography != null)
@@ -910,7 +955,33 @@ public class EMTest : MonoBehaviour {
                new PointF(rect.Right, rect.Top),
                new PointF(rect.Left, rect.Top)};
             homography.ProjectPoints(pts);
-             //for (int i = 0; i < pts.Length; i++) print("points are " + pts[i]);
+            for (int i = 0; i < pts.Length; i++) {
+                //print("points are " + pts[i] + " width "+modelImage.Width+" modelImage.Height "+modelImage.Height);
+                if(pts[i].X > modelImage.Width)
+                {
+                    //print("not within");
+                    pts[i].X = modelImage.Width;
+                }
+                else if(pts[i].X < 0)
+                {
+                    //print("not within");
+                    pts[i].X = 0;
+                }
+                if(pts[i].Y > modelImage.Width)
+                {
+                    //print("not within");
+                    pts[i].Y = modelImage.Height;
+                }
+                else if(pts[i].Y < 0)
+                {
+                    //print("not within");
+                    pts[i].Y = 0;
+                }
+                else
+                {
+                    //print("within");
+                }
+            }
             if (pts.Length > 0)
             {
                 int a = (int)(pts[0].X * pts[1].Y + pts[1].X * pts[2].Y + pts[2].X * pts[3].Y + pts[3].X * pts[0].Y);
@@ -930,7 +1001,7 @@ public class EMTest : MonoBehaviour {
 
             try
             {
-              //result.DrawPolyline(Array.ConvertAll<PointF, Point>(pts, Point.Round), true, new Bgr(System.Drawing.Color.Red), 5);
+              result.DrawPolyline(Array.ConvertAll<PointF, Point>(pts, Point.Round), true, new Bgr(System.Drawing.Color.Red), 5);
             }catch(OverflowException e)
             {
 
@@ -944,7 +1015,7 @@ public class EMTest : MonoBehaviour {
         
         matchTime = watch.ElapsedMilliseconds;
 
-       // return result;
+        return result;
     }
 
     public Image<Bgr, Byte> Drawtwo(Image<Gray, Byte> modelImage, Image<Gray, byte> observedImage)
